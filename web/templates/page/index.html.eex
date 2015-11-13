@@ -1,0 +1,14 @@
+<div id="player_info">
+  <input type="text" id="name"></input>
+</div>
+<hr />
+<div id="game_container">
+</div>
+
+<hr />
+<div id="scores">
+  <table>
+    <tbody>
+    </tbody>
+  </table>
+</div>
