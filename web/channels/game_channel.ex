@@ -6,7 +6,6 @@ defmodule SetGame.GameChannel do
   alias SetGame.AgentEngine, as: A
 
   def join("games:new_game" = room, _message, socket) do
-    :random.seed(:erlang.now) # TODO: where does this go?
     { :ok, pid } = A.start_game(room)
     # player_id = A.register_player(pid)
     socket = socket |> Phoenix.Socket.assign(:pid, pid)
@@ -28,6 +27,13 @@ defmodule SetGame.GameChannel do
     {:noreply, socket }
   end
 
+  def handle_in("new_game", _msg, socket) do
+    pid = socket.assigns[:pid]
+    SetGame.AgentEngine.replace_game(pid)
+    broadcast! socket, "game_state", game_state(pid, socket)
+    { :noreply, socket }
+  end
+
   def handle_in("find_set", %{"name" => name, "set" => [a, b, c] }, socket) do
     pid = socket.assigns[:pid]
     SetGame.AgentEngine.find_set!(pid, [a, b, c], name)
@@ -36,6 +42,6 @@ defmodule SetGame.GameChannel do
   end
 
   defp game_state(pid, socket) do
-    A.game_state(pid) |> IO.inspect
+    A.game_state(pid)
   end
 end

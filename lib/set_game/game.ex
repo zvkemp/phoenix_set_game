@@ -1,6 +1,6 @@
 
 defmodule SetGame.Game do
-  defstruct displayed: [], deck: [], players: %{}
+  defstruct displayed: [], deck: [], players: %{}, over: false
 
   alias SetGame.Game, as: G
   alias SetGame.Detector, as: D
@@ -8,7 +8,9 @@ defmodule SetGame.Game do
   @min_deal 12
 
   def new() do
-    %G{ deck: SetGame.shuffled_deck } |> show_cards_until(@min_deal) # |> show_until_set_displayed
+    :random.seed(:erlang.now) # TODO: where does this go?
+    IO.puts "NEW"
+    %G{ deck: SetGame.shuffled_deck } |> show_cards_until(@min_deal) |> IO.inspect # |> show_until_set_displayed
   end
 
   def find_set!(%G{ displayed: d } = game, a, b, c, name \\ "unknown") do
@@ -21,14 +23,14 @@ defmodule SetGame.Game do
     valid_set = is_set?(a, b, c) && Enum.all?([a, b, c], &Enum.member?(d, &1))
 
     game = cond do
-      valid_set -> %G{ game | displayed: d -- [a, b, c] } |> update_score(name) |> IO.inspect |> show_cards_until(@min_deal) |> IO.inspect
+      valid_set -> %G{ game | displayed: d -- [a, b, c] } |> update_score(name) |> show_cards_until(@min_deal)
       :else     -> game
     end
 
-    if over?(game) do
-      IO.puts "OVER!" # TODO: what should happen here?
+    case over?(game) do
+      true -> %G{ game | over: true }
+      _    -> game
     end
-    game
   end
 
   def over?(%G{ deck: [] } = game) do

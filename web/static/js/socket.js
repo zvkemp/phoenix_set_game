@@ -83,7 +83,7 @@ channel.on("game_state", body => {
     players.exit().remove()
   }
 
-  let rows = container.selectAll('div.card').data(body.cards)
+  let rows = container.selectAll('div.card').data(body.cards, d => d.id)
   rows.enter().append('div').classed('card', true)
 
   let a = function(foo) {
@@ -91,11 +91,9 @@ channel.on("game_state", body => {
       let html = []
       let shapes = []
       for (var i = 0; i < d.count; i++) {
-        //html.push(`<div style="color:${d.color};">${d.shape}</div>`)
         html.push(`<img src="/images/${d.shape}_${d.fill}_${d.color}.png" />`)
         html.push('<br />')
       }
-      //return `${d.id} ${shapes.join(' ')} ${d.fill}`
       return html.join("")
     })
   }
@@ -118,9 +116,13 @@ window.handle_click = function(row, data) {
   }
 }
 
-window.show_more = function() {
+d3.select('#show_more').on('click', function() {
   channel.push("show_more", {})
-}
+})
+
+d3.select('#new_game').on('click', function() {
+  channel.push("new_game", {})
+})
 
 window.channel = channel
 

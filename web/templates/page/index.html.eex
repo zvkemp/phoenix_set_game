@@ -6,6 +6,11 @@
 </div>
 
 <hr />
+<div id="controls">
+  <button id="show_more">show more</div>
+  <button id="new_game">new game</div>
+</div>
+<hr />
 <div id="scores">
   <table>
     <tbody>
