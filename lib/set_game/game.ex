@@ -9,7 +9,7 @@ defmodule SetGame.Game do
 
   def new() do
     :random.seed(:erlang.now) # TODO: where does this go?
-    %G{ deck: SetGame.shuffled_deck } |> show_cards_until(@min_deal) |> IO.inspect # |> show_until_set_displayed
+    %G{ deck: SetGame.shuffled_deck } |> show_cards_until(@min_deal)
   end
 
   # returns { true|false, game }, (false if set was not valid)

@@ -36,7 +36,7 @@ defmodule SetGame.Registry do
     if HashDict.has_key?(names, name) do
       { :noreply, names }
     else
-      game = SetGame.AgentEngine.start_game |> IO.inspect
+      game = SetGame.AgentEngine.start_game
       { :noreply, HashDict.put(names, name, game) }
     end
   end

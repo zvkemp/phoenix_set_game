@@ -88,7 +88,7 @@ defmodule SetGameTest.SetTest do
     cards = [
       [:blue, :oval, :stripes, 3],
       [:red, :squiggle, :stripes, 2],
-      [:green, :diamond, :empty, 1]
+      [:green, :diamond, :empty, 2]
     ] |> Enum.map(&encode/1)
 
     refute is_set?(cards)
