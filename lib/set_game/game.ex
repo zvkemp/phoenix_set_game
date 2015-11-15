@@ -5,14 +5,14 @@ defmodule SetGame.Game do
   alias SetGame.Game, as: G
   alias SetGame.Detector, as: D
 
-  @min_deal 12
+  @min_deal 9
 
   def new() do
     :random.seed(:erlang.now) # TODO: where does this go?
-    IO.puts "NEW"
     %G{ deck: SetGame.shuffled_deck } |> show_cards_until(@min_deal) |> IO.inspect # |> show_until_set_displayed
   end
 
+  # returns { true|false, game }, (false if set was not valid)
   def find_set!(%G{ displayed: d } = game, a, b, c, name \\ "unknown") do
     # validations:
     # x. all three unique (SET)
@@ -27,16 +27,17 @@ defmodule SetGame.Game do
       :else     -> game
     end
 
-    case over?(game) do
+    game = case over?(game) do
       true -> %G{ game | over: true }
       _    -> game
     end
+
+    { valid_set, game }
   end
 
   def over?(%G{ deck: [] } = game) do
     !set_displayed?(game)
   end
-
   def over?(_), do: false
 
   # at least one set displayed?

@@ -60,8 +60,6 @@ channel.join()
   .receive("error", resp => { console.log("Unable to join", resp) })
 
 let container = d3.select('#game_container')
-console.log(container)
-
 
 channel.on("game_state", body => {
   if (body.player_id) {

@@ -32,6 +32,10 @@ defmodule SetGame.AgentEngine do
     Agent.update(pid, &SetGame.Game.show_3/1)
   end
 
+  def display_more(pid, :if_necessary) do
+    !(Agent.get(pid, &(SetGame.Game.set_displayed?(&1)))) && display_more(pid)
+  end
+
   def game_state(pid) do
     %SetGame.Game{ displayed: d, players: p } = Agent.get(pid, &(&1))
     %{
@@ -41,6 +45,11 @@ defmodule SetGame.AgentEngine do
   end
 
   def find_set!(pid, [a, b, c], name \\ "unknown") do
-    Agent.update(pid, &(SetGame.Game.find_set!(&1, a, b, c, name)))
+    game = Agent.get(pid, &(&1))
+    { result, game } = SetGame.Game.find_set!(game, a, b, c, name)
+    if result do
+      Agent.update(pid, fn (_) -> game end)
+    end
+    result
   end
 end
