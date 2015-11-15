@@ -92,4 +92,4 @@ form.link, form.button {
   height: 109px;
   width: 100px;
 }
-.card.selected { border-color: red; }
+.card.selected { border-color: red; border-width: 2px; }

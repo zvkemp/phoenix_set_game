@@ -5,7 +5,7 @@ defmodule SetGame.Game do
   alias SetGame.Game, as: G
   alias SetGame.Detector, as: D
 
-  @min_deal 9
+  @min_deal 12
 
   def new() do
     :random.seed(:erlang.now) # TODO: where does this go?
@@ -58,9 +58,9 @@ defmodule SetGame.Game do
   end
 
   def show_3(%G{ deck: [] } = game), do: game
-  def show_3(%G{ displayed: d, deck: r }) do
+  def show_3(%G{ displayed: d, deck: r } = game) do
     { add, r } = Enum.split(r, 3)
-    %G{ displayed: d ++ add, deck: r }
+    %G{ game | displayed: d ++ add, deck: r }
   end
 
   def show_cards(%G{} = game, n_cards) do

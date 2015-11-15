@@ -37,10 +37,11 @@ defmodule SetGame.AgentEngine do
   end
 
   def game_state(pid) do
-    %SetGame.Game{ displayed: d, players: p } = Agent.get(pid, &(&1))
+    %SetGame.Game{ displayed: d, players: p, over: o } = Agent.get(pid, &(&1))
     %{
       players: p |> Enum.map(fn { k, v } -> %{ name: k, score: v } end),
-      cards: d |> Enum.map(&SetGame.Card.decode_map/1)
+      cards: d |> Enum.map(&SetGame.Card.decode_map/1),
+      over: o
     }
   end
 

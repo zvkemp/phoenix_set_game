@@ -62,11 +62,11 @@ channel.join()
 let container = d3.select('#game_container')
 
 channel.on("game_state", body => {
-  if (body.player_id) {
-    let player = d3.selectAll('h4.player').data([body.player_id])
-    player.enter().append('h3').classed('player', true)
-    player.text(d => `Player ${d}`)
-  }
+  //if (body.player_id) {
+  //  let player = d3.selectAll('h4.player').data([body.player_id])
+  //  player.enter().append('h3').classed('player', true)
+  //  player.text(d => `Player ${d}`)
+  //}
 
   if (body.players) {
     let player_table = d3.select('#scores tbody')
@@ -101,14 +101,26 @@ channel.on("game_state", body => {
   rows.call(a)
   rows.attr('style', d => `color:${d.color}`)
   rows.exit().remove()
+
+  if (body.over) {
+    let go = d3.selectAll('#game_over').data([0])
+    go.enter().append('div').attr('id', 'game_over')
+    go.text('GAME OVER')
+  } else {
+    d3.selectAll('#game_over').remove()
+  }
 })
 
 window.handle_click = function(row, data) {
   let r = d3.select(row)
   r.classed('selected', !r.classed('selected'))
+  eval_selected()
+}
+
+window.eval_selected = function(username) {
   let selected = d3.selectAll('.card.selected')
   if ( selected[0].length == 3 ) {
-    let name = d3.select('#player_info input')[0][0].value
+    let name = username || d3.select('#player_info input')[0][0].value
     channel.push("find_set", { name: name, set: selected.data().map(d => d.id) })
     selected.classed('selected', false)
   }
@@ -122,6 +134,19 @@ d3.select('#new_game').on('click', function() {
   channel.push("new_game", {})
 })
 
+
 window.channel = channel
+
+window.hint = function(n) {
+  channel.push("hint", { n: n || 2 })
+}
+
+channel.on("hint", body => {
+  d3.selectAll('.card')
+    .classed('selected', false)
+    .filter(d => { return body.hint.indexOf(d.id) >= 0 })
+    .classed('selected', true)
+  setTimeout(function() { eval_selected("hint") }, 250)
+})
 
 export default socket
